@@ -52,7 +52,7 @@ def crawl_all_books(max_pages=None):
 
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
-            print(f"❌ HTTP {response.status_code}, dừng.")
+            print(f"HTTP {response.status_code}, dừng.")
             break
 
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -98,7 +98,7 @@ def crawl_all_books(max_pages=None):
                 session.commit()
                 print(f"Lưu thành công: {detail['title']}")
 
-        print(f"✅ Hoàn thành crawl trang {page}")
+        print(f"Hoàn thành crawl trang {page}")
         page += 1
 
     session.close()
