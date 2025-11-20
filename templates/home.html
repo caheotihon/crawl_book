@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" type="text/css">
+{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h2 class="search-title">Trang chủ</h2>
+    </div>
+    <div class="container mt-4">
+        <div class="search-results-section">
+            <main class="search-results-body">
+                
+                <div class="row">
+                    {% for book in books %}
+                    <div class="search-item col-4 col-md-3 col-lg-2">
+                        <div class="search-item-wrapper tooltip-container">
+                            <a href="{{ url_for('story_detail', book_id=book['id']) }}">
+                                <div class="image-ratio-container">
+                                    <img src="{{ book['img_url'] }}" alt="{{ book['title'] }}" class="image-placeholder">
+                                    <div class="rating-display">
+                                        {{ book['discount'] }} <!-- Hiển thị discount -->
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="search-item-details">
+                                <div class="chapter-title text-center">
+                                    <span class="text-info">{{ book['new_price'] }}</span>
+                                    
+                                </div>
+                                <div class="volume-title text-center">
+                                    {{ book['category'] }} <!-- Hiển thị category -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="series-title">
+                            <a href="{{ url_for('story_detail', book_id=book['id']) }}">{{ book['title'] }}</a> <!-- Hiển thị title -->
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </main>
+        </div>
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% set query = request.args.get('query', '') %}
+                {% set sort_price = request.args.get('sort_price', '') %}
+
+                {% if mode == 'search' %}
+                    {% set base_url = 'search' %}
+                {% else %}
+                    {% set base_url = 'home' %}
+                {% endif %}
+
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{% if base_url == 'search' %}
+                        {{ url_for('search', query=query, sort_price=sort_price, page=page-1) }}
+                    {% else %}
+                        {{ url_for('home', page=page-1) }}
+                    {% endif %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="page-item {% if page == 1 %}active{% endif %}">
+                    <a class="page-link" href="{% if base_url == 'search' %}
+                        {{ url_for('search', query=query, sort_price=sort_price, page=1) }}
+                    {% else %}
+                        {{ url_for('home', page=1) }}
+                    {% endif %}">1</a>
+                </li>
+
+                {% if page > 4 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+
+                {% for p in range(page-2, page) %}
+                    {% if p > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% if base_url == 'search' %}
+                            {{ url_for('search', query=query, sort_price=sort_price, page=p) }}
+                        {% else %}
+                            {{ url_for('home', page=p) }}
+                        {% endif %}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page != 1 and page != total_pages %}
+                <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                {% endif %}
+
+                {% for p in range(page+1, page+3) %}
+                    {% if p < total_pages %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% if base_url == 'search' %}
+                            {{ url_for('search', query=query, sort_price=sort_price, page=p) }}
+                        {% else %}
+                            {{ url_for('home', page=p) }}
+                        {% endif %}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page < total_pages - 3 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+
+                {% if total_pages > 1 %}
+                <li class="page-item {% if page == total_pages %}active{% endif %}">
+                    <a class="page-link" href="{% if base_url == 'search' %}
+                        {{ url_for('search', query=query, sort_price=sort_price, page=total_pages) }}
+                    {% else %}
+                        {{ url_for('home', page=total_pages) }}
+                    {% endif %}">{{ total_pages }}</a>
+                </li>
+                {% endif %}
+
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{% if base_url == 'search' %}
+                        {{ url_for('search', query=query, sort_price=sort_price, page=page+1) }}
+                    {% else %}
+                        {{ url_for('home', page=page+1) }}
+                    {% endif %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const advancedSearchToggle = document.querySelector('.advanced-search-toggle');
+            const advancedSearchOptions = document.querySelector('.advanced-search-options');
+
+            advancedSearchToggle.addEventListener('click', function () {
+                // Toggle hiển thị/ẩn phần tìm kiếm nâng cao
+                advancedSearchOptions.classList.toggle('d-none');
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}Giới thiệu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card border-0">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Giới thiệu</h2>
+
+            <p class="text-muted">
+                Đây là đồ án môn học "Kỹ thuật lập trình trong phân tích dữ liệu" thực hiện tại Trường Đại học Thủ Dầu Một - Viện Kỹ thuật Công nghệ. Đề tài tập trung vào việc xây dựng một hệ thống thu thập dữ liệu sách từ website <strong>Vinabook</strong>, lưu trữ và hiển thị trên website dưới dạng danh sách có thể tìm kiếm và phân loại.
+            </p>
+
+            <p class="text-muted">
+                Hệ thống được xây dựng bằng ngôn ngữ lập trình <strong>Python</strong>, với các thư viện và công nghệ như 
+                <code>Requests</code>, 
+                <code>BeautifulSoup</code>, 
+                <code>SQLAlchemy</code>, 
+                <code>Flask</code>, 
+                <code>Scikit-learn</code>, 
+                <code>unicodedata</code>, 
+                <code>re</code>, 
+                <code>urllib.parse</code>. 
+                Dữ liệu sau khi được thu thập sẽ được lưu trữ vào cơ sở dữ liệu <strong>SQLite</strong> để phục vụ cho việc tìm kiếm và phân tích hiệu quả.
+            </p>
+
+            <h4 class="mt-4">Thông tin</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Tên đề tài:</strong> Crawl dữ liệu sách từ Vinabook và xây dựng giao diện hiển thị
+                </li>
+                <li class="list-group-item">
+                    <strong>Giảng viên hướng dẫn:</strong> ThS. Nguyễn Thế Bảo
+                </li>
+                <li class="list-group-item">
+                    <strong>Lớp:</strong> CNTT.CQ.03
+                </li>
+                <li class="list-group-item">
+                    <strong>Chức năng chính:</strong>
+                    <ul>
+                        <li>Tự động thu thập dữ liệu sách từ website Vinabook</li>
+                        <li>Lưu trữ dữ liệu vào cơ sở dữ liệu SQLite</li>
+                        <li>Tìm kiếm theo từ khóa</li>
+                        <li>Phân loại sách theo thể loại</li>
+                        <li>Sắp xếp sách theo giá</li>
+                        <li>Xem chi tiết sách</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4 class="mt-4">Thành viên thực hiện</h4>
+            <div class="row row-cols-1 row-cols-md-3 g-3 mt-2">
+                <div class="col">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Trần Văn Tài</h5>
+                            <p class="card-text">MSSV: 2224802010134</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Dương Tuấn Duy</h5>
+                            <p class="card-text">MSSV: 2224802010787</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Nguyễn Quốc Tuấn</h5>
+                            <p class="card-text">MSSV: 2224802010235</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

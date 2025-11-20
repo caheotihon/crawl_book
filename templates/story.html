@@ -1,0 +1,141 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Chi tiết truyện{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/story.css') }}" type="text/css">
+    <style>
+        .description-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .description-text.expanded {
+            -webkit-line-clamp: unset;
+            max-height: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header class="novel-header">
+        <div class="glass-background">
+            <img src="{{ book['img_url'] }}" alt="{{ book['title'] }}"> <!-- Link ảnh -->
+            <div class="glass-shade"></div>
+        </div>
+        <div class="header-body container-custom">
+            <div class="fixed-img">
+                <figure class="cover">
+                    <img src="{{ book['img_url'] }}" alt="{{ book['title'] }}"> <!-- Link ảnh -->
+                </figure>
+            </div>
+            <div class="novel-info">
+                <div class="main-head">
+                    <h1 class="text2row">{{ book['title'] }}</h1> <!-- Title trong dữ liệu -->
+                    <div class="author">
+                        <span>Nhà cung cấp:</span>
+                        <a href="#" class="property-item">{{ book['supplier'] }}</a> <!-- Supplier -->
+                    </div>
+                    <div class="rating fs-5">
+                        Giá: 
+                        <span class="text-danger mx-2">{{ book['new_price'] }}</span>
+                        {% if book['old_price'] %}
+
+                        <span class="text-white text-decoration-line-through mx-2"> {{ book['old_price'] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <nav class="links">
+                    <a href="#" class="button">
+                    <span>Mua ngay</span>
+                    </a>
+                    <a href="#" class="button"><span><i class="bi bi-bell"></i> Thêm vào giỏ</span></a>
+                </nav>
+                <div class="header-stats">
+                    <span><small>Sản phẩm</small><strong>100% chính hãng</strong></span>
+                    <span><small>Tư vấn</small><strong>Trong giờ hành chính</strong></span>
+                    <span><small>Vận chuyển</small><strong>Miễn phí từ 250.000đ</strong></span>
+                    <span><small>Hotline</small><strong>1900 6401</strong></span>
+                </div>
+                <div class="categories">
+                    <h4 class="fs-6">Thể loại: {{ book['category'] }}</h4>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="novel-body container-custom bg-white">
+        <section>
+            <div class="novel-description">
+                <h4>Giới thiệu sách:</h4>
+                <div class="description-text" id="bookDescription">
+                    {{ book['description'] }}
+                </div>
+                <a class="btn btn-link p-0 mt-1" id="toggleButton" style="display: none;" role="button">
+                    Xem thêm
+                </a>
+            </div>
+        </section>
+        
+        <div class="related mt-4">
+            <div class="related__title">Sản phẩm liên quan</div>
+            <div class="row">
+                {% for related_book in related_books %}
+                <div class="related__item col-6 col-md-4 col-lg-3">
+                    <div class="related__item-wrapper tooltip-container">
+                        <a href="{{ url_for('story_detail', book_id=related_book['id']) }}">
+                            <div class="related__image-container">
+                                <img src="{{ related_book['img_url'] }}" alt="{{ related_book['title'] }}" class="related__image">
+                                <div class="related__rating">
+                                    {{ related_book['discount'] }} <!-- Hiển thị discount -->
+                                </div>
+                            </div>
+                        </a>
+                        <div class="related__details">
+                            <div class="related__volume-title">{{ related_book['category'] }}</div>
+                        </div>
+                    </div>
+                    <div class="related__series-title">
+                        <a href="{{ url_for('story_detail', book_id=related_book['id']) }}">{{ related_book['title'] }}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const desc = document.getElementById('bookDescription');
+        const toggleBtn = document.getElementById('toggleButton');
+
+        // Tạo bản sao để đo full height
+        const clone = desc.cloneNode(true);
+        clone.style.visibility = 'hidden';
+        clone.style.position = 'absolute';
+        clone.style.height = 'auto';
+        clone.style.webkitLineClamp = 'unset';
+        clone.classList.add('expanded');
+        document.body.appendChild(clone);
+
+        // Nếu nội dung dài hơn bản gốc thì hiển thị nút
+        if (clone.scrollHeight > desc.clientHeight) {
+            toggleBtn.style.display = 'inline';
+        }
+
+        // Toggle mở rộng
+        toggleBtn.addEventListener('click', () => {
+            desc.classList.toggle('expanded');
+            if (desc.classList.contains('expanded')) {
+            toggleBtn.textContent = 'Thu gọn';
+            } else {
+            toggleBtn.textContent = 'Xem thêm';
+            }
+        });
+
+        document.body.removeChild(clone);
+        });
+    </script>
+{% endblock %}

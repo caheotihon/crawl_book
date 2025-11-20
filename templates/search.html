@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" type="text/css">
+{% endblock %}
+
+{% block content %}
+    <div class="search-header container my-4">
+    <h2 class="search-title">
+        {% if query %}
+            Kết quả tìm kiếm cho: "{{ query }}"
+        {% elif selected_category %}
+            Danh mục: "{{ selected_category }}"
+        {% else %}
+            Tìm kiếm
+        {% endif %}
+    </h2>
+    <form class="search-form" method="get" action="{% if mode == 'category' %}{{ url_for('category', category_name=selected_category) }}{% else %}{{ url_for('search') }}{% endif %}">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-8">
+                <input type="text" class="form-control" name="query" placeholder="Nhập tên sách cần tìm..." value="{{ query }}">
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="sort_price" onchange="this.form.page.value = 1; this.form.submit()">
+                    <option value="">Sắp xếp theo giá</option>
+                    <option value="asc" {% if sort_price == 'asc' %}selected{% endif %}>Giá tăng dần</option>
+                    <option value="desc" {% if sort_price == 'desc' %}selected{% endif %}>Giá giảm dần</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="page" value="{{ page }}">
+
+            {% if selected_category %}
+                <input type="hidden" name="category_name" value="{{ selected_category }}">
+            {% endif %}
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="search-results-section">
+        <main class="search-results-body">
+            <div class="row">
+                {% for book in books %}
+                <div class="search-item col-4 col-md-3 col-lg-2">
+                    <div class="search-item-wrapper tooltip-container">
+                        <a href="{{ url_for('story_detail', book_id=book['id']) }}">
+                            <div class="image-ratio-container">
+                                <img src="{{ book['img_url'] }}" alt="{{ book['title'] }}" class="image-placeholder">
+                                <div class="rating-display">
+                                    {{ book['discount'] }}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="search-item-details text-center">
+                            <div class="chapter-title"><span class="text-info">{{ book['new_price'] }}</span></div>
+                            <div class="volume-title">{{ book['category'] }}</div>
+                        </div>
+                    </div>
+                    <div class="series-title text-center">
+                        <a href="{{ url_for('story_detail', book_id=book['id']) }}">{{ book['title'] }}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    {# PHÂN TRANG CHỈ CHO /search #}
+    <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page > 1 %}
+        <li class="page-item">
+            {% if mode == 'category' %}
+                <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=page-1) }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            {% else %}
+                <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=page-1) }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            {% endif %}
+        </li>
+        {% endif %}
+
+        <li class="page-item {% if page == 1 %}active{% endif %}">
+            {% if mode == 'category' %}
+                <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=1) }}">1</a>
+            {% else %}
+                <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=1) }}">1</a>
+            {% endif %}
+        </li>
+
+        {% if page > 4 %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        {% endif %}
+
+        {% for p in range(page-2, page) %}
+            {% if p > 1 %}
+            <li class="page-item">
+                {% if mode == 'category' %}
+                    <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=p) }}">{{ p }}</a>
+                {% else %}
+                    <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=p) }}">{{ p }}</a>
+                {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page != 1 and page != total_pages %}
+        <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+        {% endif %}
+
+        {% for p in range(page+1, page+3) %}
+            {% if p < total_pages %}
+            <li class="page-item">
+                {% if mode == 'category' %}
+                    <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=p) }}">{{ p }}</a>
+                {% else %}
+                    <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=p) }}">{{ p }}</a>
+                {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages - 3 %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        {% endif %}
+
+        {% if total_pages > 1 %}
+        <li class="page-item {% if page == total_pages %}active{% endif %}">
+            {% if mode == 'category' %}
+                <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=total_pages) }}">{{ total_pages }}</a>
+            {% else %}
+                <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=total_pages) }}">{{ total_pages }}</a>
+            {% endif %}
+        </li>
+        {% endif %}
+
+        {% if page < total_pages %}
+        <li class="page-item">
+            {% if mode == 'category' %}
+                <a class="page-link" href="{{ url_for('category', category_name=selected_category, sort_price=sort_price, page=page+1) }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            {% else %}
+                <a class="page-link" href="{{ url_for('search', query=query, sort_price=sort_price, page=page+1) }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            {% endif %}
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+</div>
+{% endblock %}
